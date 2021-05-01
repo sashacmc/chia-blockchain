@@ -274,6 +274,14 @@ class FarmerAPI:
 
     @api_request
     async def farming_info(self, request: farmer_protocol.FarmingInfo):
+        if request.sp_hash in self.farmer.cache_add_time:
+            d = int(time.time()) - self.farmer.cache_add_time[request.sp_hash]
+            self.farmer.log.info(f"harvester response: " +
+                                 f"lookup_time: {d}s, " +
+                                 f"passed_filter: {request.passed}, " +
+                                 f"proofs: {request.proofs}, " +
+                                 f"total_plots: {request.total_plots}")
+
         self.farmer.state_changed(
             "new_farming_info",
             {
